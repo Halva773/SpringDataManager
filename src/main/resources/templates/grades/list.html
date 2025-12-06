@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Журнал оценок</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 Журнал оценок</h1>
+            <p class="subtitle">Система учёта успеваемости студентов</p>
+        </header>
+
+        <!-- Сообщения об успехе/ошибке -->
+        <div th:if="${successMessage}" class="alert alert-success">
+            <span th:text="${successMessage}"></span>
+        </div>
+        <div th:if="${errorMessage}" class="alert alert-error">
+            <span th:text="${errorMessage}"></span>
+        </div>
+
+        <!-- Форма быстрого добавления -->
+        <section class="add-form-section">
+            <h2>➕ Добавить новую оценку</h2>
+            <form th:action="@{/grades/quick-add}" th:object="${newGrade}" method="post" class="quick-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="studentName">Имя студента</label>
+                        <input type="text" id="studentName" th:field="*{studentName}" 
+                               placeholder="Введите имя студента" required>
+                        <span th:if="${#fields.hasErrors('studentName')}" 
+                              th:errors="*{studentName}" class="error-text"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="subject">Предмет</label>
+                        <input type="text" id="subject" th:field="*{subject}" 
+                               placeholder="Введите предмет" required>
+                        <span th:if="${#fields.hasErrors('subject')}" 
+                              th:errors="*{subject}" class="error-text"></span>
+                    </div>
+                    <div class="form-group grade-input">
+                        <label for="grade">Оценка</label>
+                        <input type="number" id="grade" th:field="*{grade}" 
+                               min="1" max="5" placeholder="1-5" required>
+                        <span th:if="${#fields.hasErrors('grade')}" 
+                              th:errors="*{grade}" class="error-text"></span>
+                    </div>
+                    <div class="form-group button-group">
+                        <button type="submit" class="btn btn-primary">Добавить</button>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+        <!-- Таблица оценок -->
+        <section class="grades-table-section">
+            <h2>📋 Список оценок</h2>
+            
+            <div th:if="${#lists.isEmpty(grades)}" class="empty-state">
+                <div class="empty-icon">📝</div>
+                <p>Пока нет ни одной оценки</p>
+                <p class="empty-hint">Добавьте первую оценку, используя форму выше</p>
+            </div>
+
+            <table th:if="${not #lists.isEmpty(grades)}" class="grades-table">
+                <thead>
+                    <tr>
+                        <th class="col-id">ID</th>
+                        <th class="col-name">Имя студента</th>
+                        <th class="col-subject">Предмет</th>
+                        <th class="col-grade">Оценка</th>
+                        <th class="col-actions">Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="grade : ${grades}">
+                        <td th:text="${grade.id}" class="cell-id"></td>
+                        <td th:text="${grade.studentName}" class="cell-name"></td>
+                        <td th:text="${grade.subject}" class="cell-subject"></td>
+                        <td class="cell-grade">
+                            <span class="grade-badge" 
+                                  th:classappend="${grade.grade >= 4 ? 'grade-good' : (grade.grade >= 3 ? 'grade-ok' : 'grade-bad')}"
+                                  th:text="${grade.grade}"></span>
+                        </td>
+                        <td class="cell-actions">
+                            <a th:href="@{/grades/edit/{id}(id=${grade.id})}" class="btn btn-edit" title="Редактировать">
+                                ✏️ Редактировать
+                            </a>
+                            <a th:href="@{/grades/delete/{id}(id=${grade.id})}" 
+                               class="btn btn-delete" 
+                               title="Удалить"
+                               onclick="return confirm('Вы уверены, что хотите удалить эту оценку?')">
+                                🗑️ Удалить
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <footer>
+            <p>© 2024 Журнал оценок | Вариант 18</p>
+        </footer>
+    </div>
+</body>
+</html>
+

@@ -1,0 +1,125 @@
+# ========================
+# Compiled class files
+# ========================
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+
+# ========================
+# Build directories
+# ========================
+target/
+build/
+out/
+bin/
+
+# ========================
+# Maven
+# ========================
+.mvn/wrapper/maven-wrapper.jar
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/MavenWrapperDownloader.class
+
+# ========================
+# Gradle (если будет использоваться)
+# ========================
+.gradle/
+gradle/wrapper/gradle-wrapper.jar
+gradle-app.setting
+!gradle-wrapper.jar
+
+# ========================
+# IDE - IntelliJ IDEA
+# ========================
+.idea/
+*.iml
+*.ipr
+*.iws
+.idea_modules/
+atlassian-ide-plugin.xml
+
+# ========================
+# IDE - Eclipse
+# ========================
+.classpath
+.project
+.settings/
+.factorypath
+
+# ========================
+# IDE - NetBeans
+# ========================
+nbproject/private/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+# ========================
+# IDE - VS Code
+# ========================
+.vscode/
+*.code-workspace
+
+# ========================
+# OS generated files
+# ========================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# ========================
+# Logs
+# ========================
+*.log
+logs/
+spring.log
+
+# ========================
+# Temporary files
+# ========================
+*.tmp
+*.temp
+*.swp
+*~
+
+# ========================
+# H2 Database files
+# ========================
+*.db
+*.mv.db
+*.trace.db
+
+# ========================
+# Application properties (если содержат секреты)
+# ========================
+# application-local.properties
+# application-prod.properties
+
+# ========================
+# Test output
+# ========================
+test-output/
+surefire-reports/
+
+# ========================
+# Package files
+# ========================
+*.zip
+*.tar.gz
+*.rar
+
