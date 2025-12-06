@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,8 +11,28 @@
 <body>
     <div class="container">
         <header>
-            <h1>📚 Журнал оценок</h1>
-            <p class="subtitle">Система учёта успеваемости студентов</p>
+            <div class="header-content">
+                <div class="header-left">
+                    <h1>📚 Журнал оценок</h1>
+                    <p class="subtitle">Система учёта успеваемости студентов</p>
+                </div>
+                <div class="header-right">
+                    <div class="user-info">
+                        <span class="user-name">
+                            👤 <span sec:authentication="name">Пользователь</span>
+                        </span>
+                        <span class="user-role" sec:authorize="hasRole('ADMIN')">
+                            <span class="role-badge admin">ADMIN</span>
+                        </span>
+                        <span class="user-role" sec:authorize="hasRole('USER') and !hasRole('ADMIN')">
+                            <span class="role-badge user">USER</span>
+                        </span>
+                    </div>
+                    <form th:action="@{/logout}" method="post" class="logout-form">
+                        <button type="submit" class="btn btn-logout">🚪 Выход</button>
+                    </form>
+                </div>
+            </div>
         </header>
 
         <!-- Сообщения об успехе/ошибке -->
@@ -21,8 +43,14 @@
             <span th:text="${errorMessage}"></span>
         </div>
 
-        <!-- Форма быстрого добавления -->
-        <section class="add-form-section">
+        <!-- Информация для пользователей с ролью USER -->
+        <div sec:authorize="hasRole('USER') and !hasRole('ADMIN')" class="alert alert-info">
+            ℹ️ У вас роль <strong>USER</strong>. Вы можете только просматривать оценки. 
+            Для редактирования необходима роль <strong>ADMIN</strong>.
+        </div>
+
+        <!-- Форма быстрого добавления - только для ADMIN -->
+        <section sec:authorize="hasRole('ADMIN')" class="add-form-section">
             <h2>➕ Добавить новую оценку</h2>
             <form th:action="@{/grades/quick-add}" th:object="${newGrade}" method="post" class="quick-form">
                 <div class="form-row">
@@ -61,7 +89,8 @@
             <div th:if="${#lists.isEmpty(grades)}" class="empty-state">
                 <div class="empty-icon">📝</div>
                 <p>Пока нет ни одной оценки</p>
-                <p class="empty-hint">Добавьте первую оценку, используя форму выше</p>
+                <p sec:authorize="hasRole('ADMIN')" class="empty-hint">Добавьте первую оценку, используя форму выше</p>
+                <p sec:authorize="hasRole('USER') and !hasRole('ADMIN')" class="empty-hint">Оценки пока не добавлены администратором</p>
             </div>
 
             <table th:if="${not #lists.isEmpty(grades)}" class="grades-table">
@@ -71,7 +100,8 @@
                         <th class="col-name">Имя студента</th>
                         <th class="col-subject">Предмет</th>
                         <th class="col-grade">Оценка</th>
-                        <th class="col-actions">Действия</th>
+                        <!-- Колонка действий только для ADMIN -->
+                        <th sec:authorize="hasRole('ADMIN')" class="col-actions">Действия</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -84,7 +114,8 @@
                                   th:classappend="${grade.grade >= 4 ? 'grade-good' : (grade.grade >= 3 ? 'grade-ok' : 'grade-bad')}"
                                   th:text="${grade.grade}"></span>
                         </td>
-                        <td class="cell-actions">
+                        <!-- Кнопки действий только для ADMIN -->
+                        <td sec:authorize="hasRole('ADMIN')" class="cell-actions">
                             <a th:href="@{/grades/edit/{id}(id=${grade.id})}" class="btn btn-edit" title="Редактировать">
                                 ✏️ Редактировать
                             </a>
@@ -101,9 +132,8 @@
         </section>
 
         <footer>
-            <p>© 2024 Журнал оценок | Вариант 18</p>
+            <p>© 2024 Журнал оценок | Вариант 18 | Spring Security</p>
         </footer>
     </div>
 </body>
 </html>
-

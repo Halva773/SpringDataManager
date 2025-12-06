@@ -628,3 +628,262 @@ footer {
     color: var(--color-bg-primary);
 }
 
+/* ===== Header with User Info ===== */
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.header-left {
+    text-align: left;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-shrink: 0;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    background: var(--color-bg-secondary);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+}
+
+.user-name {
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.role-badge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: var(--radius-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.role-badge.admin {
+    background: linear-gradient(135deg, var(--color-accent-primary) 0%, #d4942f 100%);
+    color: var(--color-bg-primary);
+}
+
+.role-badge.user {
+    background: rgba(80, 200, 120, 0.2);
+    color: var(--color-success);
+    border: 1px solid var(--color-success);
+}
+
+.logout-form {
+    display: inline;
+}
+
+.btn-logout {
+    background: rgba(231, 76, 60, 0.15);
+    color: var(--color-error);
+    font-size: 0.9rem;
+    padding: 10px 16px;
+    border: 1px solid transparent;
+}
+
+.btn-logout:hover {
+    background: rgba(231, 76, 60, 0.25);
+    border-color: var(--color-error);
+}
+
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .header-left {
+        text-align: center;
+    }
+    
+    .header-right {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+}
+
+/* ===== Info Alert ===== */
+.alert-info {
+    background: rgba(99, 179, 237, 0.1);
+    border: 1px solid #63b3ed;
+    color: #63b3ed;
+}
+
+.alert-info::before {
+    content: '';
+}
+
+/* ===== Auth Pages ===== */
+.auth-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 24px;
+}
+
+.auth-container {
+    width: 100%;
+    max-width: 440px;
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.auth-card {
+    background: var(--color-bg-card);
+    border-radius: var(--radius-lg);
+    padding: 40px;
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-lg);
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.auth-header h1 {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--color-text-primary);
+    margin-bottom: 8px;
+    background: linear-gradient(135deg, var(--color-text-primary) 0%, var(--color-accent-secondary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.auth-header .subtitle {
+    color: var(--color-text-secondary);
+    font-size: 1rem;
+}
+
+.auth-form .form-group {
+    margin-bottom: 20px;
+}
+
+.auth-form input {
+    width: 100%;
+}
+
+.auth-form .form-actions {
+    margin-top: 28px;
+    padding-top: 0;
+    border-top: none;
+}
+
+.btn-full {
+    width: 100%;
+    justify-content: center;
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid var(--color-border);
+    color: var(--color-text-secondary);
+}
+
+.auth-link {
+    color: var(--color-accent-primary);
+    text-decoration: none;
+    font-weight: 600;
+    transition: var(--transition-fast);
+}
+
+.auth-link:hover {
+    color: var(--color-accent-secondary);
+    text-decoration: underline;
+}
+
+.demo-credentials {
+    margin-top: 24px;
+    padding: 16px;
+    background: var(--color-bg-secondary);
+    border-radius: var(--radius-md);
+    border: 1px dashed var(--color-border);
+}
+
+.demo-credentials h4 {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.credential-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 0;
+    font-size: 0.95rem;
+    color: var(--color-text-secondary);
+}
+
+.credential-item .role-badge {
+    min-width: 60px;
+    text-align: center;
+}
+
+.form-info {
+    background: rgba(99, 179, 237, 0.1);
+    border: 1px solid #63b3ed;
+    color: #63b3ed;
+    padding: 12px 16px;
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+    margin-bottom: 16px;
+}
+
+/* ===== Error Card (Access Denied) ===== */
+.error-card {
+    text-align: center;
+}
+
+.error-icon {
+    font-size: 4rem;
+    margin-bottom: 16px;
+}
+
+.error-card h1 {
+    font-size: 1.8rem;
+    color: var(--color-error);
+    margin-bottom: 16px;
+}
+
+.error-message {
+    color: var(--color-text-primary);
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+}
+
+.error-hint {
+    color: var(--color-text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 24px;
+}
+
+.error-actions {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+

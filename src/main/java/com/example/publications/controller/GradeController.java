@@ -62,7 +62,7 @@ public class GradeController {
      * Форма редактирования оценки
      */
     @GetMapping("/edit/{id}")
-    public String showEditForm(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
+    public String showEditForm(@PathVariable("id") Long id, Model model, RedirectAttributes redirectAttributes) {
         Optional<Grade> gradeOptional = gradeService.findById(id);
         if (gradeOptional.isEmpty()) {
             redirectAttributes.addFlashAttribute("errorMessage", "Оценка не найдена!");
@@ -76,14 +76,15 @@ public class GradeController {
      * Обработка обновления оценки
      */
     @PostMapping("/edit/{id}")
-    public String updateGrade(@PathVariable Long id,
+    public String updateGrade(@PathVariable("id") Long id,
                               @Valid @ModelAttribute("grade") Grade grade,
                               BindingResult result,
                               RedirectAttributes redirectAttributes) {
+        // Устанавливаем id ДО проверки ошибок, чтобы форма редактирования отображалась правильно
+        grade.setId(id);
         if (result.hasErrors()) {
             return "grades/form";
         }
-        grade.setId(id);
         gradeService.save(grade);
         redirectAttributes.addFlashAttribute("successMessage", "Оценка успешно обновлена!");
         return "redirect:/grades";
@@ -93,7 +94,7 @@ public class GradeController {
      * Удаление оценки
      */
     @GetMapping("/delete/{id}")
-    public String deleteGrade(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    public String deleteGrade(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
         if (gradeService.existsById(id)) {
             gradeService.deleteById(id);
             redirectAttributes.addFlashAttribute("successMessage", "Оценка успешно удалена!");
@@ -121,4 +122,3 @@ public class GradeController {
         return "redirect:/grades";
     }
 }
-

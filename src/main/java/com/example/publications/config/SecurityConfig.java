@@ -1,20 +1,30 @@
 package com.example.publications.config;
 
+import com.example.publications.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
+
+    private final UserService userService;
+
+    public SecurityConfig(@Lazy UserService userService) {
+        this.userService = userService;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -22,18 +32,39 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 // Разрешить доступ к статическим ресурсам
                 .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
-                // Разрешить доступ к H2 консоли
+                // Разрешить доступ к H2 консоли (для разработки)
                 .requestMatchers("/h2-console/**").permitAll()
+                // Разрешить доступ к странице логина, регистрации и access-denied
+                .requestMatchers("/login", "/register", "/access-denied").permitAll()
+                
+                // Редактирование, добавление, удаление - только для ADMIN
+                .requestMatchers("/grades/new", "/grades/new/**").hasRole("ADMIN")
+                .requestMatchers("/grades/edit/**").hasRole("ADMIN")
+                .requestMatchers("/grades/delete/**").hasRole("ADMIN")
+                .requestMatchers("/grades/quick-add").hasRole("ADMIN")
+                
+                // Просмотр списка оценок - доступно всем аутентифицированным
+                .requestMatchers("/grades", "/").hasAnyRole("USER", "ADMIN")
+                
                 // Все остальные запросы требуют аутентификации
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
+                .loginPage("/login")
+                .loginProcessingUrl("/login")
                 .defaultSuccessUrl("/grades", true)
+                .failureUrl("/login?error=true")
                 .permitAll()
             )
             .logout(logout -> logout
-                .logoutSuccessUrl("/login?logout")
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login?logout=true")
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID")
                 .permitAll()
+            )
+            .exceptionHandling(ex -> ex
+                .accessDeniedPage("/access-denied")
             )
             // Для H2 Console
             .csrf(csrf -> csrf
@@ -47,20 +78,16 @@ public class SecurityConfig {
     }
 
     @Bean
-    public UserDetailsService userDetailsService() {
-        UserDetails admin = User.builder()
-            .username("admin")
-            .password(passwordEncoder().encode("admin"))
-            .roles("ADMIN", "USER")
-            .build();
+    public DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userService);
+        authProvider.setPasswordEncoder(passwordEncoder());
+        return authProvider;
+    }
 
-        UserDetails user = User.builder()
-            .username("user")
-            .password(passwordEncoder().encode("user"))
-            .roles("USER")
-            .build();
-
-        return new InMemoryUserDetailsManager(admin, user);
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+        return authConfig.getAuthenticationManager();
     }
 
     @Bean
@@ -68,4 +95,3 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 }
-

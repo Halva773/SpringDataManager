@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,18 +11,30 @@
 <body>
     <div class="container">
         <header>
-            <h1 th:text="${grade.id != null ? '✏️ Редактирование оценки' : '➕ Добавление оценки'}">Форма оценки</h1>
-            <p class="subtitle">
-                <a th:href="@{/grades}" class="back-link">← Вернуться к списку</a>
-            </p>
+            <div class="header-content">
+                <div class="header-left">
+                    <h1 th:text="${grade.id != null ? '✏️ Редактирование оценки' : '➕ Добавление оценки'}">Форма оценки</h1>
+                    <p class="subtitle">
+                        <a th:href="@{/grades}" class="back-link">← Вернуться к списку</a>
+                    </p>
+                </div>
+                <div class="header-right">
+                    <div class="user-info">
+                        <span class="user-name">
+                            👤 <span sec:authentication="name">Пользователь</span>
+                        </span>
+                        <span class="role-badge admin">ADMIN</span>
+                    </div>
+                    <form th:action="@{/logout}" method="post" class="logout-form">
+                        <button type="submit" class="btn btn-logout">🚪 Выход</button>
+                    </form>
+                </div>
+            </div>
         </header>
 
         <section class="form-section">
-            <form th:action="${grade.id != null ? '/grades/edit/' + grade.id : '/grades/new'}" 
-                  th:object="${grade}" 
-                  method="post" 
-                  class="grade-form">
-                
+            <!-- Форма для создания новой оценки -->
+            <form th:if="${grade.id == null}" th:action="@{/grades/new}" th:object="${grade}" method="post" class="grade-form">
                 <div class="form-group">
                     <label for="studentName">Имя студента <span class="required">*</span></label>
                     <input type="text" 
@@ -74,18 +88,75 @@
                 </div>
 
                 <div class="form-actions">
-                    <button type="submit" class="btn btn-primary btn-large">
-                        <span th:text="${grade.id != null ? '💾 Сохранить изменения' : '➕ Добавить оценку'}"></span>
-                    </button>
+                    <button type="submit" class="btn btn-primary btn-large">➕ Добавить оценку</button>
+                    <a th:href="@{/grades}" class="btn btn-secondary btn-large">Отмена</a>
+                </div>
+            </form>
+
+            <!-- Форма для редактирования существующей оценки -->
+            <form th:if="${grade.id != null}" th:action="@{/grades/edit/{id}(id=${grade.id})}" th:object="${grade}" method="post" class="grade-form">
+                <div class="form-group">
+                    <label for="studentName2">Имя студента <span class="required">*</span></label>
+                    <input type="text" 
+                           id="studentName2" 
+                           th:field="*{studentName}" 
+                           placeholder="Введите полное имя студента"
+                           th:classappend="${#fields.hasErrors('studentName') ? 'input-error' : ''}"
+                           required>
+                    <span th:if="${#fields.hasErrors('studentName')}" 
+                          th:errors="*{studentName}" 
+                          class="error-text"></span>
+                    <span class="hint">От 2 до 100 символов</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="subject2">Предмет <span class="required">*</span></label>
+                    <input type="text" 
+                           id="subject2" 
+                           th:field="*{subject}" 
+                           placeholder="Введите название предмета"
+                           th:classappend="${#fields.hasErrors('subject') ? 'input-error' : ''}"
+                           required>
+                    <span th:if="${#fields.hasErrors('subject')}" 
+                          th:errors="*{subject}" 
+                          class="error-text"></span>
+                    <span class="hint">Например: Математика, Программирование, История</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="grade2">Оценка <span class="required">*</span></label>
+                    <input type="number" 
+                           id="grade2" 
+                           th:field="*{grade}" 
+                           min="1" 
+                           max="5" 
+                           placeholder="Оценка от 1 до 5"
+                           th:classappend="${#fields.hasErrors('grade') ? 'input-error' : ''}"
+                           required>
+                    <span th:if="${#fields.hasErrors('grade')}" 
+                          th:errors="*{grade}" 
+                          class="error-text"></span>
+                    <span class="hint">Введите оценку от 1 до 5</span>
+                    
+                    <div class="grade-legend">
+                        <span class="grade-item grade-5">5 - Отлично</span>
+                        <span class="grade-item grade-4">4 - Хорошо</span>
+                        <span class="grade-item grade-3">3 - Удовлетворительно</span>
+                        <span class="grade-item grade-2">2 - Неудовлетворительно</span>
+                        <span class="grade-item grade-1">1 - Плохо</span>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary btn-large">💾 Сохранить изменения</button>
                     <a th:href="@{/grades}" class="btn btn-secondary btn-large">Отмена</a>
                 </div>
             </form>
         </section>
 
         <footer>
-            <p>© 2024 Журнал оценок | Вариант 18</p>
+            <p>© 2024 Журнал оценок | Вариант 18 | Spring Security</p>
         </footer>
     </div>
 </body>
 </html>
-

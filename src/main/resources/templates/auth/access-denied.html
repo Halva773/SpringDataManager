@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Доступ запрещён</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="auth-page">
+    <div class="auth-container">
+        <div class="auth-card error-card">
+            <div class="error-icon">🚫</div>
+            <h1>Доступ запрещён</h1>
+            <p class="error-message">
+                У вас недостаточно прав для выполнения этого действия.
+            </p>
+            <p class="error-hint">
+                Редактирование, добавление и удаление оценок доступно только администраторам.
+            </p>
+            <div class="error-actions">
+                <a th:href="@{/grades}" class="btn btn-primary">← Вернуться к списку</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
