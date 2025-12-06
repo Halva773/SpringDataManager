@@ -30,6 +30,8 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
+                // Разрешить доступ к REST API без аутентификации
+                .requestMatchers("/api/**").permitAll()
                 // Разрешить доступ к статическим ресурсам
                 .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
                 // Разрешить доступ к H2 консоли (для разработки)
@@ -66,8 +68,9 @@ public class SecurityConfig {
             .exceptionHandling(ex -> ex
                 .accessDeniedPage("/access-denied")
             )
-            // Для H2 Console
+            // Отключаем CSRF для REST API и H2 Console
             .csrf(csrf -> csrf
+                .ignoringRequestMatchers("/api/**")
                 .ignoringRequestMatchers("/h2-console/**")
             )
             .headers(headers -> headers
